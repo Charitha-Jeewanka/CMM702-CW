@@ -88,7 +88,7 @@
 					taps: tapLogsArray.map(function(t) { return JSON.parse(t); })
 				};
 
-				fetch("http://localhost:8000/save-taps", {
+				fetch("/save-taps", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify(payload)

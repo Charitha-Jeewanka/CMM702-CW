@@ -1,6 +1,8 @@
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List
 
@@ -28,6 +30,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ---------------------------------------------------------------------------
+# Serve the frontend
+# ---------------------------------------------------------------------------
+_frontend_dir = os.path.join(os.path.dirname(__file__), "..", "Frontend")
+
+
+@app.get("/")
+async def serve_frontend():
+    return FileResponse(os.path.join(_frontend_dir, "index.html"))
+
+
+app.mount("/static", StaticFiles(directory=_frontend_dir), name="static")
 
 
 # ---------------------------------------------------------------------------
@@ -67,7 +82,7 @@ async def save_taps(session: TapSession):
                         ├── tapSequenceNumber
                         ├── startTimestamp
                         ├── endTimestamp
-                        ├── duration           (computed: end − start)
+                        ├── duration           (computed: end - start)
                         ├── interfaceType
                         └── interfaceSequence
     """
